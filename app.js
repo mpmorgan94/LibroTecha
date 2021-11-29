@@ -35,13 +35,28 @@ app.get('/signUp', (req, result) => {
     result.render('pages/signUp')
 });
 
-app.post('/createUser', (req, result) => {
-    console.log(req.body)
+app.post('/verifyCreds', (req, result) => {
+    pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
+                AND password='${req.body.password}'`, (err, res) => {
+        if (err) {
+            console.log(err);
+            result.render('pages/errors', { errmsg: err.message });
+        }
+        else if (res.rowCount == 0) {
+            result.render('pages/errors', { errmsg: "no account associated with provided username and password." });
+        }
+        else {
+            //success, login
+            result.render('pages/home', { currUsername: res.rows[0].email });
+        }
+    });
+});
 
+app.post('/createUser', (req, result) => {
     pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'`, (err, res) => {
         if (err) {
             console.log(err);
-            result.redirect('/signUp')
+            result.render('pages/errors', { errmsg: err.message });
         }
         else if (res.rowCount > 0) {
             result.render('pages/errors', { errmsg: "username already in use." });
@@ -53,13 +68,14 @@ app.post('/createUser', (req, result) => {
                 '${req.body.first_name}',
                 '${req.body.last_name}')`, (err, res) => {
 
-            if (err) {
-                console.log(err);
-                result.redirect('/signUp')
-            }
-            else {
-                result.redirect('/home');
-            }
+                if (err) {
+                    console.log(err);
+                    result.render('pages/errors', { errmsg: err.message });
+                }
+                else {
+                    console.log("user created");
+                    result.redirect('/home');
+                }
             })
         }
     });
@@ -67,7 +83,6 @@ app.post('/createUser', (req, result) => {
 
 app.get('/allBooks', (req, result) => {
     let books = pool.query('SELECT * FROM book', (err, res) => {
-        //console.log(err, res.rows)
         result.render('pages/allBooks', { books: res.rows })
     })
 });
