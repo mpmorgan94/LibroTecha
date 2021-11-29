@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+<html>
+
+<head><title>LibraTecho</title></head>
+
+<body>
+    <h1>All Books</h1>
+
+    <p>
+        <% books.forEach( (book, i) => { %>
+            <%= i+1 %>. <%= book.title %>
+            <br>
+        <% }); %>
+    </p>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Work+Sans:400,700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/signUp.css">
+    <title>LibroTecha</title>
+</head>
+
+
+<body>
+    <h1>Join LibroTecha</h1>
+    <p>To join, create an account below.</p>
+
+    <form id="form" action="/createUser" method="POST">
+        <input id="textfield" name="email" type="email" id="email" placeholder="email" required>
+        <br>
+        <input id="textfield" name="password" type="password" id="password" placeholder="password" required minlength="8">
+        <br>
+        <input id="textfield" name="first_name" type="text" id="firstname" placeholder="first name" required>
+        <br>
+        <input id="textfield" name="last_name" type="text" id="lastname" placeholder="last name" required>
+        <br>
+        <input id="inputSubmit" type="submit" value="CREATE ACCOUNT">
+    </form>
+    
+    <form id="form" action="/login">
+        <input id="inputSubmit" type="submit" value="I ALREADY HAVE AN ACCOUNT">
+    </form>
+
+</body>
+</html>
