@@ -38,6 +38,7 @@ p {
   width: fit-content;
   border-radius: .1em;
   text-decoration: none;
+  cursor: pointer;
 }
 
 #inputSubmit:hover {
@@ -111,4 +112,17 @@ p {
   border-bottom-width: .08cm;
   border-radius: 2%;
   outline: none;
+}
+
+#mainp {
+  margin: auto;
+  background-color: rgb(161,236,255,1);
+  width: 50%;
+  margin-top: 1em;
+  padding: 1.5em;
+  padding-left: 1.7em;
+  padding-right: 1.7em;
+  border-style: solid;
+  border-radius: 1%;
+  border-color: black;
 }

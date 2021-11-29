@@ -47,6 +47,7 @@ p {
   transition: 0.1s;
   background-color: rgb(75, 75, 75);
   text-decoration: none;
+  cursor: pointer;
 }
 
 #inputSubmit:focus {

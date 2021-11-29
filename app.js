@@ -121,6 +121,27 @@ app.post('/allBooks', (req, result) => {
     });
 });
 
+app.post('/book', (req, result) => {
+    pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
+                AND password='${req.body.password}'`, (err, res) => {
+        if (err) {
+            console.log(err)
+            result.render('pages/errors', { errmsg: err })
+        }
+        else if (res.rowCount == 0) {
+            console.log("no account associated with provided username and password.")
+            result.render('pages/errors', { errmsg: "credential verification failed" })
+        }
+        else {
+            //success, allow access
+            let book = pool.query(`SELECT * FROM book WHERE book_id=${req.body.book_id}`, (err, res) => {
+                if (err) {console.log(err);}
+                result.render('pages/book', { book: res.rows[0], email: req.body.email, password: req.body.password });
+            })
+        }
+    });
+});
+
 app.listen(process.env.PORT || 3000, () => {
     console.log('Server is running.. on Port 3000');
 });

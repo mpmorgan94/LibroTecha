@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/css/navBar.css">
     <link rel="stylesheet" type="text/css" href="/css/allBooks.css">
     <%- include('../partials/navBar'); %> 
-    <title>LibraTecho</title>
+    <title>LibroTecha</title>
 </head>
 
 <body>
@@ -14,11 +14,18 @@
     <br>
     <br>
 
-    <p style="text-align: left; padding-left: 1%; margin-bottom: 2in;">
-        <% books.forEach( (book, i) => { %>
-            <%= i+1 %>. &nbsp;<%= book.title %>
-            <br>
-        <% }); %>
-    </p>
+    <div id="mainp">
+        <p>
+            <% books.forEach( (book, i) => { %>
+                <form style="display: inline;" action="/book" method="POST">
+                    <input id="hidden" name="email" value="<%= email %>">
+                    <input id="hidden" name="password" value="<%= password %>">
+                    <input id="hidden" name="book_id" value=<%= book.book_id %>>
+                    <input id="bookbutton" type="submit" value="<%= i+1 %>. <%= book.title %>">
+                </form>
+                <br>
+            <% }); %>
+        </p>
+    </div>
 </body>
 </html>

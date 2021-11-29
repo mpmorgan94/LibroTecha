@@ -5,7 +5,7 @@
 
 html {
   background: rgb(255,255,255);
-  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(161,236,255,1) 100%);
+  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgb(12, 206, 255) 10%);
   top: 0px;
   bottom: 0px;
 }
@@ -19,7 +19,53 @@ h1 {
 
 p {
   font-family: 'Work Sans', sans-serif;
-  text-align: center;
   margin: auto;
-  font-size: 2vw;
+  font-size: 2em;
+  text-align: left;
+  padding-left: 1%;
+}
+
+a {
+  font-family: 'Work Sans', sans-serif;
+}
+
+a:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+#mainp {
+  margin: auto;
+  background-color: rgb(161,236,255,1);
+  width: 50%;
+  margin-top: 1em;
+  margin-bottom: 2in;
+  padding: 1.5em;
+  padding-left: 1.7em;
+  padding-right: 1.7em;
+  border-style: solid;
+  border-radius: .2%;
+  border-color: black;
+}
+
+#bookbutton {
+  text-align: left;
+  background-color: unset;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: 'Work Sans', sans-serif;
+  border-color: unset;
+  font-size: 2em;
+  border-width: 0px;
+  padding-top: .3em;
+  width: auto;
+  height: auto;
+}
+
+#bookbutton:hover {
+  font-weight: bold;
 }
