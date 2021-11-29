@@ -1,11 +1,29 @@
-<div class="main">
+<div>
+  <nav>
+    <ul>
+      <li>
+        <form id="inline" action="/home" method="POST">
+          <input id="hidden" name="email" value="<%= email %>" >
+          <input id="hidden" name="password" value="<%= password %>">
+          <input type="submit" value="HOME">
+        </form>
+      </li>
 
-  <nav class="menu">
+      <li>
+        <form id="inline" action="/allBooks" method="POST">
+          <input id="hidden" name="email" value="<%= email %>" >
+          <input id="hidden" name="password" value="<%= password %>">
+          <input type="submit" value="ALL BOOKS">
+        </form>
+      </li>
 
-    <ul class="menu__list">
-      <li class="menu__item_left"><a href="#0" class="menu__link text-underlined">Home</a></li>
-      <li class="menu__item_left"><a href="#0" class="menu__link text-underlined">All Books</a></li>
-      <li class="menu__item_right"><a href="#0" class="menu__link text-underlined">Search</a></li>
+      <li>
+        <form id="inline" action="/search" method="POST">
+          <input id="hidden" name="email" value="<%= email %>" >
+          <input id="hidden" name="password" value="<%= password %>">
+          <input type="submit" value="SEARCH">
+        </form>
+      </li>
     </ul>
 
   </nav>

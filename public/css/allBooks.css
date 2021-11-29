@@ -1,0 +1,25 @@
+@font-face {
+  font-family: firstFont;
+  src: url(.woof);
+}
+
+html {
+  background: rgb(255,255,255);
+  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(161,236,255,1) 100%);
+  top: 0px;
+  bottom: 0px;
+}
+
+h1 {
+  font-family: 'Crimson Text', serif;
+  font-size: 3vw;
+  margin: auto;
+  text-align: center;
+}
+
+p {
+  font-family: 'Work Sans', sans-serif;
+  text-align: center;
+  margin: auto;
+  font-size: 2vw;
+}

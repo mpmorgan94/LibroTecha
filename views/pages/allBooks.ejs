@@ -2,14 +2,21 @@
 
 <html>
 
-<head><title>LibraTecho</title></head>
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/navBar.css">
+    <link rel="stylesheet" type="text/css" href="/css/allBooks.css">
+    <%- include('../partials/navBar'); %> 
+    <title>LibraTecho</title>
+</head>
 
 <body>
     <h1>All Books</h1>
+    <br>
+    <br>
 
-    <p>
+    <p style="text-align: left; padding-left: 1%; margin-bottom: 2in;">
         <% books.forEach( (book, i) => { %>
-            <%= i+1 %>. <%= book.title %>
+            <%= i+1 %>. &nbsp;<%= book.title %>
             <br>
         <% }); %>
     </p>
