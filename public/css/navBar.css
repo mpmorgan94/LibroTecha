@@ -1,6 +1,6 @@
 @font-face {
-  font-family: firstFont;
-  src: url(.woof);
+  font-family: 'Work Sans', sans-serif;
+  src: url('https://fonts.googleapis.com/css?family=Crimson+Text|Work+Sans:400,700');
 }
 
 nav {
@@ -22,7 +22,8 @@ li {
 }
 
 .navbutton {
-  font-family: 'Work Sans', sans-serif;
+  font-family: 'Crimson Text', serif;
+  font-weight: bold;
   text-align: center;
   font-size: 2.2vw;
   display: inline;

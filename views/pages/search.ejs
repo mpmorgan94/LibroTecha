@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/navBar.css">
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Work+Sans:400,700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/search.css">
+    <%- include('../partials/navBar'); %> 
+    <title>LibroTecha</title>
+</head>
+
+
+<body>
+    <h1>Search</h1>
+    <p>Use the form to search the database.<br>
+       You do not have to include all fields.
+    </p>
+
+    <form id="form" action="/searchResults" method="POST">
+        <input id="hidden" name="email" value="<%= email %>">
+        <input id="hidden" name="password" value="<%= password %>">
+
+        <input id="textfield" name="book_id" type="number" placeholder="book id number">
+        <br>
+        <input id="textfield" name="title" type="text" placeholder="title">
+        <br>
+        <input id="textfield" name="publisher" type="text" placeholder="publisher">
+        <br>
+        <input id="inputSubmit" type="submit" value="SEARCH">
+    </form>
+
+</body>
+</html>

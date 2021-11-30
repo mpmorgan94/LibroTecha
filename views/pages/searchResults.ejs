@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Work+Sans:400,700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/navBar.css">
+    <link rel="stylesheet" type="text/css" href="/css/searchResults.css">
+    <%- include('../partials/navBar'); %>
+    <title>LibroTecha</title>
+</head>
+
+<body>
+    <h1>Search Results</h1>
+
+    <div id="mainp">
+        <p>
+            <% if(books.length == 0) { %>
+                <%= "No books found." %> 
+            <% }
+            else { %>
+                <% books.forEach( (book, i) => { %>
+                    <form style="display: inline;" action="/book" method="POST">
+                        <input id="hidden" name="email" value="<%= email %>">
+                        <input id="hidden" name="password" value="<%= password %>">
+                        <input id="hidden" name="book_id" value=<%= book.book_id %>>
+                        <input id="bookbutton" type="submit" value="<%= i+1 %>. <%= book.title %>">
+                    </form>
+                    <br>
+                <% }); %>
+            <% } %> 
+        </p>
+    </div>
+</body>
+</html>

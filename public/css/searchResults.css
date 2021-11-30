@@ -4,10 +4,11 @@
 }
 
 html {
-  background: rgb(255,255,255);
-  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgb(12, 206, 255) 10%);
   top: 0px;
   bottom: 0px;
+  min-height: 100%;
+  background: rgb(255,255,255);
+  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgb(12, 206, 255) 300vh);
 }
 
 h1 {
@@ -41,7 +42,7 @@ a:visited {
 #mainp {
   margin: auto;
   background-color: rgb(161,236,255,1);
-  width: 50%;
+  min-width: 70%;
   margin-top: 1em;
   margin-bottom: 2in;
   padding: 1.5em;
@@ -51,6 +52,7 @@ a:visited {
   border-radius: .2%;
   border-color: black;
   width: fit-content;
+
 }
 
 #bookbutton {

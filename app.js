@@ -13,6 +13,7 @@ const pool = new Pool({
 var bodyParser = require('body-parser');
 var express = require('express');
 const { body,validationResult } = require('express-validator');
+const { render } = require('ejs');
 var app = express();
 
 app.use(express.static('public'));
@@ -137,6 +138,60 @@ app.post('/book', (req, result) => {
             let book = pool.query(`SELECT * FROM book WHERE book_id=${req.body.book_id}`, (err, res) => {
                 if (err) {console.log(err);}
                 result.render('pages/book', { book: res.rows[0], email: req.body.email, password: req.body.password });
+            })
+        }
+    });
+});
+
+app.post('/search', (req, result) => {
+    pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
+                AND password='${req.body.password}'`, (err, res) => {
+        if (err) {
+            console.log(err)
+            result.render('pages/errors', { errmsg: err })
+        }
+        else if (res.rowCount == 0) {
+            console.log("no account associated with provided username and password.")
+            result.render('pages/errors', { errmsg: "credential verification failed" })
+        }
+        else {
+            //success, allow access
+            result.render('pages/search', { email: req.body.email, password: req.body.password });
+        }
+    });
+});
+
+app.post('/searchResults', (req, result) => {
+    pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
+                AND password='${req.body.password}'`, (err, res) => {
+        if (err) {
+            console.log(err)
+            result.render('pages/errors', { errmsg: err })
+        }
+        else if (res.rowCount == 0) {
+            console.log("no account associated with provided username and password.")
+            result.render('pages/errors', { errmsg: "credential verification failed" })
+        }
+        else {
+            //success, allow access
+
+            //build book search sql string
+            let sqlString = `SELECT * FROM book
+                            WHERE LOWER(title) LIKE LOWER('%${req.body.title}%')
+                            AND LOWER(publisher) LIKE LOWER('%${req.body.publisher}%')`;
+
+            if (req.body.book_id != "") {
+                sqlString += ` AND book_id = ${req.body.book_id}`;
+            }
+
+            sqlString += ` ORDER BY title`;
+
+
+
+
+            let books = pool.query(sqlString, (err, res) => {
+                if(err){ console.log(err);}
+                result.render('pages/searchResults', { books: res.rows, email: req.body.email, password: req.body.password });
             })
         }
     });
