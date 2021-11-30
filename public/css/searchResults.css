@@ -72,3 +72,38 @@ a:visited {
 #bookbutton:hover {
   font-weight: bold;
 }
+
+#heart {
+  width: 1.5vw;
+  height: 1.5vw;
+}
+
+#heart:hover {
+  
+  position: relative;
+  left: 0vw;
+}
+
+#container {
+  position: relative;
+  bottom: -.15vw;
+  display: inline;
+  font-size: .8vw;
+  padding-right: 1vw;
+}
+
+#child {
+  position: absolute;
+  bottom: 1.2vw;
+  left: 1.9vw;
+  font-family: 'Crimson Text', serif;
+  color: rgb(2, 2, 2);
+  font-weight: bold;
+  cursor: pointer;
+  pointer-events: none;
+}
+
+#container:hover {
+  position: relative;
+  bottom: 0vw;
+}

@@ -114,7 +114,14 @@ app.post('/allBooks', (req, result) => {
         }
         else {
             //success, allow access
-            let books = pool.query('SELECT * FROM book', (err, res) => {
+            let books = pool.query(`SELECT *, ('${req.body.email}'
+                                    IN (SELECT usr_email FROM favorite
+                                    WHERE book.book_id = favorite.book_id))
+                                    AS is_favorite,
+                                    (SELECT COUNT(book_id) FROM favorite
+                                    WHERE book.book_id=favorite.book_id)
+                                    AS favorite_count FROM book`, (err, res) => {
+
                 result.render('pages/allBooks', { books: res.rows, email: req.body.email, password: req.body.password });
             })
         }
@@ -178,10 +185,24 @@ app.post('/searchResults', (req, result) => {
             //success, allow access
 
             //build book search sql string
-            let sqlString = `SELECT * FROM book JOIN author ON author.author_id = book.author_id
+            let sqlString = `SELECT *, ('${req.body.email}'
+                            IN (SELECT usr_email FROM favorite
+                            WHERE book.book_id = favorite.book_id))
+                            AS is_favorite,
+                            (SELECT COUNT(book_id) FROM favorite
+                            WHERE book.book_id=favorite.book_id)
+                            AS favorite_count FROM book
+                            JOIN author ON author.author_id = book.author_id
                             WHERE LOWER(title) LIKE LOWER('%${req.body.title}%')
                             AND LOWER(publisher) LIKE LOWER('%${req.body.publisher}%')
                             AND LOWER(full_name) LIKE LOWER('%${req.body.author}%')`;
+            
+                            /*
+            `SELECT * FROM book JOIN author ON author.author_id = book.author_id
+                            WHERE LOWER(title) LIKE LOWER('%${req.body.title}%')
+                            AND LOWER(publisher) LIKE LOWER('%${req.body.publisher}%')
+                            AND LOWER(full_name) LIKE LOWER('%${req.body.author}%')`;
+                            */
 
             if (req.body.book_id != "") {
                 sqlString += ` AND book_id = ${req.body.book_id}`;
@@ -200,6 +221,32 @@ app.post('/searchResults', (req, result) => {
             let books = pool.query(sqlString, (err, res) => {
                 if(err){ console.log(err);}
                 result.render('pages/searchResults', { books: res.rows, email: req.body.email, password: req.body.password });
+            })
+        }
+    });
+});
+
+app.post('/addFavorite', (req, result) => {
+    pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
+                AND password='${req.body.password}'`, (err, res) => {
+        if (err) {
+            console.log(err)
+            result.render('pages/errors', { errmsg: err })
+        }
+        else if (res.rowCount == 0) {
+            console.log("no account associated with provided username and password.")
+            result.render('pages/errors', { errmsg: "credential verification failed" })
+        }
+        else {
+            //success, allow access
+            pool.query(`INSERT INTO favorite (usr_email, book_id)
+                        VALUES ('${req.body.email}', ${req.body.book_id})`, (err, res) => {
+                
+                if (err) {
+                    console.log(err);
+                    result.render('pages/errors', { errmsg: "you probably have already favorited this book. Don't worry, soon you will be able to unfavorite books too." })
+                }
+                result.render('pages/home', { email: req.body.email, password: req.body.password });
             })
         }
     });
