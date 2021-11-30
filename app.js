@@ -9,7 +9,6 @@ const pool = new Pool({
     ssl: true
 });
 
-
 var bodyParser = require('body-parser');
 var express = require('express');
 const { body,validationResult } = require('express-validator');
@@ -135,7 +134,10 @@ app.post('/book', (req, result) => {
         }
         else {
             //success, allow access
-            let book = pool.query(`SELECT * FROM book WHERE book_id=${req.body.book_id}`, (err, res) => {
+            let book = pool.query(`SELECT * FROM book JOIN author
+                                    ON author.author_id = book.author_id
+                                    WHERE book_id=${req.body.book_id}`, (err, res) => {
+                
                 if (err) {console.log(err);}
                 result.render('pages/book', { book: res.rows[0], email: req.body.email, password: req.body.password });
             })
@@ -176,18 +178,24 @@ app.post('/searchResults', (req, result) => {
             //success, allow access
 
             //build book search sql string
-            let sqlString = `SELECT * FROM book
+            let sqlString = `SELECT * FROM book JOIN author ON author.author_id = book.author_id
                             WHERE LOWER(title) LIKE LOWER('%${req.body.title}%')
-                            AND LOWER(publisher) LIKE LOWER('%${req.body.publisher}%')`;
+                            AND LOWER(publisher) LIKE LOWER('%${req.body.publisher}%')
+                            AND LOWER(full_name) LIKE LOWER('%${req.body.author}%')`;
 
             if (req.body.book_id != "") {
                 sqlString += ` AND book_id = ${req.body.book_id}`;
             }
 
+            if (req.body.rating != "") {
+                sqlString += ` AND rating >= ${req.body.rating}`;
+            }
+
+            if (req.body.year_published != "") {
+                sqlString += ` AND year_published = ${req.body.year_published}`;
+            }
+
             sqlString += ` ORDER BY title`;
-
-
-
 
             let books = pool.query(sqlString, (err, res) => {
                 if(err){ console.log(err);}
