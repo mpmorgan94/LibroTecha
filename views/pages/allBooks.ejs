@@ -16,13 +16,20 @@
     <div id="mainp">
         <p>
             <% books.forEach( (book, i) => { %>
+                <form style="display: inline;" action="/" method="POST">
+                    &nbsp;
+                    <input id="heart" src="/assets/red_heart.png" type="image" alt="submit">
+                </form>
+
                 <form style="display: inline;" action="/book" method="POST">
                     <input id="hidden" name="email" value="<%= email %>">
                     <input id="hidden" name="password" value="<%= password %>">
                     <input id="hidden" name="book_id" value=<%= book.book_id %>>
-                    <input id="bookbutton" type="submit" value="<%= i+1 %>. <%= book.title %>">
+                    <input id="bookbutton" type="submit" value=" <%= book.title %>">
                 </form>
+
                 <br>
+
             <% }); %>
         </p>
     </div>

@@ -70,3 +70,14 @@ a:visited {
 #bookbutton:hover {
   font-weight: bold;
 }
+
+#heart {
+  width: 1.5vw;
+  height: 1.5vw;
+}
+
+#heart:hover {
+  transition: .2s;
+  width: 1.7vw;
+  height: 1.7vw;
+}
