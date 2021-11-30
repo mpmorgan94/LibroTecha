@@ -196,13 +196,6 @@ app.post('/searchResults', (req, result) => {
                             WHERE LOWER(title) LIKE LOWER('%${req.body.title}%')
                             AND LOWER(publisher) LIKE LOWER('%${req.body.publisher}%')
                             AND LOWER(full_name) LIKE LOWER('%${req.body.author}%')`;
-            
-                            /*
-            `SELECT * FROM book JOIN author ON author.author_id = book.author_id
-                            WHERE LOWER(title) LIKE LOWER('%${req.body.title}%')
-                            AND LOWER(publisher) LIKE LOWER('%${req.body.publisher}%')
-                            AND LOWER(full_name) LIKE LOWER('%${req.body.author}%')`;
-                            */
 
             if (req.body.book_id != "") {
                 sqlString += ` AND book_id = ${req.body.book_id}`;
