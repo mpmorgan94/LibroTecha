@@ -232,14 +232,61 @@ app.post('/addFavorite', (req, result) => {
         }
         else {
             //success, allow access
-            pool.query(`INSERT INTO favorite (usr_email, book_id)
-                        VALUES ('${req.body.email}', ${req.body.book_id})`, (err, res) => {
+            pool.query(`SELECT COUNT(book_id) FROM favorite
+                        WHERE usr_email='${req.body.email}'
+                        AND book_id=${req.body.book_id}`, (err, res) => {
                 
                 if (err) {
                     console.log(err);
-                    result.render('pages/errors', { errmsg: "you probably have already favorited this book. Don't worry, soon you will be able to unfavorite books too." })
+                    result.render('pages/errors', { errmsg: err })
                 }
-                result.render('pages/home', { email: req.body.email, password: req.body.password });
+                else if (res.rows[0].count > 0) {
+                    //delete from favorites table
+                    pool.query(`DELETE FROM favorite WHERE
+                                usr_email='${req.body.email}'
+                                AND book_id=${req.body.book_id}`, (err, res) => {
+                        
+                        if (err) {
+                            console.log(err);
+                            result.render('pages/errors', { errmsg: err })
+                        }
+                        else {
+                            let books = pool.query(`SELECT *, ('${req.body.email}'
+                                    IN (SELECT usr_email FROM favorite
+                                    WHERE book.book_id = favorite.book_id))
+                                    AS is_favorite,
+                                    (SELECT COUNT(book_id) FROM favorite
+                                    WHERE book.book_id=favorite.book_id)
+                                    AS favorite_count FROM book`, (err, res) => {
+
+                                result.render('pages/allBooks', { books: res.rows, email: req.body.email, password: req.body.password });
+                            })
+                        }
+                    })
+                }
+                else {
+                    //add to favorites table
+                    pool.query(`INSERT INTO favorite (usr_email, book_id)
+                                VALUES ('${req.body.email}', ${req.body.book_id})`, (err, res) => {
+                        
+                        if (err) {
+                            console.log(err);
+                            result.render('pages/errors', { errmsg: err })
+                        }
+                        else {
+                            let books = pool.query(`SELECT *, ('${req.body.email}'
+                                    IN (SELECT usr_email FROM favorite
+                                    WHERE book.book_id = favorite.book_id))
+                                    AS is_favorite,
+                                    (SELECT COUNT(book_id) FROM favorite
+                                    WHERE book.book_id=favorite.book_id)
+                                    AS favorite_count FROM book`, (err, res) => {
+
+                                result.render('pages/allBooks', { books: res.rows, email: req.body.email, password: req.body.password });
+                            })
+                        }
+                    })
+                }
             })
         }
     });
