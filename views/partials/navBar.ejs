@@ -24,6 +24,14 @@
           <input class="navbutton" type="submit" value="SEARCH">
         </form>
       </li>
+
+      <li>
+        <form id="inline" action="/favorites" method="POST">
+          <input id="hidden" name="email" value="<%= email %>" >
+          <input id="hidden" name="password" value="<%= password %>">
+          <input class="navbutton" type="submit" value="FAVORITES">
+        </form>
+      </li>
     </ul>
 
   </nav>

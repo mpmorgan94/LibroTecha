@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Work+Sans:400,700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/navBar.css">
+    <link rel="stylesheet" type="text/css" href="/css/favorites.css">
+    <%- include('../partials/navBar'); %>
+    <title>LibroTecha</title>
+</head>
+
+<body>
+    <h1>Your Favorites</h1>
+
+    <div id="mainp">
+        <p>
+            <% if(books.length == 0) { %>
+                <%= "You do not have any favorites. You can add a favorite by clicking on the heart next to a book, it will appear red if it is favorited." %> 
+            <% }
+            else { %>
+                <% books.forEach( (book, i) => { %>
+                    
+                    <div id="container">
+                    <form style="display: inline;" action="/addFavorite" method="POST">
+                        <input id="hidden" name="email" value="<%= email %>">
+                        <input id="hidden" name="password" value="<%= password %>">
+                        <input id="hidden" name="book_id" value="<%= book.book_id %>">
+                        &nbsp;
+                        <% if (book.is_favorite == true) { %>
+                            <input id="heart" src="/assets/red_heart.png" type="image" alt="submit">
+                        <% } %> 
+                        <% if (book.is_favorite == false) { %>
+                            <input id="heart" src="/assets/grey_heart.png" type="image" alt="submit">
+                        <% } %>
+                    </form>
+                    <div id="child"><%= book.favorite_count %></div>
+                    </div>
+
+                    <form style="display: inline;" action="/book" method="POST">
+                        <input id="hidden" name="email" value="<%= email %>">
+                        <input id="hidden" name="password" value="<%= password %>">
+                        <input id="hidden" name="book_id" value="<%= book.book_id %>">
+                        <input id="bookbutton" type="submit" value=" <%= book.title %>">
+                    </form>
+                    <br>
+
+                <% }); %>
+            <% } %> 
+        </p>
+    </div>
+</body>
+</html>

@@ -114,7 +114,7 @@ app.post('/allBooks', (req, result) => {
         }
         else {
             //success, allow access
-            let books = pool.query(`SELECT *, ('${req.body.email}'
+            pool.query(`SELECT *, ('${req.body.email}'
                                     IN (SELECT usr_email FROM favorite
                                     WHERE book.book_id = favorite.book_id))
                                     AS is_favorite,
@@ -141,7 +141,7 @@ app.post('/book', (req, result) => {
         }
         else {
             //success, allow access
-            let book = pool.query(`SELECT * FROM book JOIN author
+            pool.query(`SELECT * FROM book JOIN author
                                     ON author.author_id = book.author_id
                                     WHERE book_id=${req.body.book_id}`, (err, res) => {
                 
@@ -211,7 +211,7 @@ app.post('/searchResults', (req, result) => {
 
             sqlString += ` ORDER BY title`;
 
-            let books = pool.query(sqlString, (err, res) => {
+            pool.query(sqlString, (err, res) => {
                 if(err){ console.log(err);}
                 result.render('pages/searchResults', { books: res.rows, email: req.body.email, password: req.body.password });
             })
@@ -251,15 +251,24 @@ app.post('/addFavorite', (req, result) => {
                             result.render('pages/errors', { errmsg: err })
                         }
                         else {
-                            let books = pool.query(`SELECT *, ('${req.body.email}'
-                                    IN (SELECT usr_email FROM favorite
-                                    WHERE book.book_id = favorite.book_id))
-                                    AS is_favorite,
-                                    (SELECT COUNT(book_id) FROM favorite
-                                    WHERE book.book_id=favorite.book_id)
-                                    AS favorite_count FROM book`, (err, res) => {
+                            //build "find all my favorites" slq string
+                            let sqlString = `SELECT title, book_id, is_favorite,
+                                            favorite_count FROM (SELECT *, ('${req.body.email}'
+                                            IN (SELECT usr_email FROM favorite
+                                            WHERE book.book_id = favorite.book_id))
+                                            AS is_favorite,
+                                            (SELECT COUNT(book_id) FROM favorite
+                                            WHERE book.book_id=favorite.book_id)
+                                            AS favorite_count FROM (book
+                                            JOIN author ON author.author_id = book.author_id)) AS tempTable
+                                            WHERE is_favorite=true
+                                            ORDER BY title`;
 
-                                result.render('pages/allBooks', { books: res.rows, email: req.body.email, password: req.body.password });
+                                pool.query(sqlString, (err, res) => {
+                                if(err){ console.log(err);}
+                                else {
+                                    result.render('pages/favorites', { books: res.rows, email: req.body.email, password: req.body.password });
+                                }
                             })
                         }
                     })
@@ -274,18 +283,64 @@ app.post('/addFavorite', (req, result) => {
                             result.render('pages/errors', { errmsg: err })
                         }
                         else {
-                            let books = pool.query(`SELECT *, ('${req.body.email}'
-                                    IN (SELECT usr_email FROM favorite
-                                    WHERE book.book_id = favorite.book_id))
-                                    AS is_favorite,
-                                    (SELECT COUNT(book_id) FROM favorite
-                                    WHERE book.book_id=favorite.book_id)
-                                    AS favorite_count FROM book`, (err, res) => {
+                            //build "find all my favorites" slq string
+                            let sqlString = `SELECT title, book_id, is_favorite,
+                                            favorite_count FROM (SELECT *, ('${req.body.email}'
+                                            IN (SELECT usr_email FROM favorite
+                                            WHERE book.book_id = favorite.book_id))
+                                            AS is_favorite,
+                                            (SELECT COUNT(book_id) FROM favorite
+                                            WHERE book.book_id=favorite.book_id)
+                                            AS favorite_count FROM (book
+                                            JOIN author ON author.author_id = book.author_id)) AS tempTable
+                                            WHERE is_favorite=true
+                                            ORDER BY title`;
 
-                                result.render('pages/allBooks', { books: res.rows, email: req.body.email, password: req.body.password });
+                                pool.query(sqlString, (err, res) => {
+                                if(err){ console.log(err);}
+                                else {
+                                    result.render('pages/favorites', { books: res.rows, email: req.body.email, password: req.body.password });
+                                }
                             })
                         }
                     })
+                }
+            })
+        }
+    });
+});
+
+app.post('/favorites', (req, result) => {
+    pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
+                AND password='${req.body.password}'`, (err, res) => {
+        if (err) {
+            console.log(err)
+            result.render('pages/errors', { errmsg: err })
+        }
+        else if (res.rowCount == 0) {
+            console.log("no account associated with provided username and password.")
+            result.render('pages/errors', { errmsg: "credential verification failed" })
+        }
+        else {
+            //success, allow access
+
+            //build "find all my favorites" slq string
+            let sqlString = `SELECT title, book_id, is_favorite,
+                            favorite_count FROM (SELECT *, ('${req.body.email}'
+                            IN (SELECT usr_email FROM favorite
+                            WHERE book.book_id = favorite.book_id))
+                            AS is_favorite,
+                            (SELECT COUNT(book_id) FROM favorite
+                            WHERE book.book_id=favorite.book_id)
+                            AS favorite_count FROM (book
+                            JOIN author ON author.author_id = book.author_id)) AS tempTable
+                            WHERE is_favorite=true
+                            ORDER BY title`;
+
+            pool.query(sqlString, (err, res) => {
+                if(err){ console.log(err);}
+                else {
+                    result.render('pages/favorites', { books: res.rows, email: req.body.email, password: req.body.password });
                 }
             })
         }
