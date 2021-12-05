@@ -11,15 +11,20 @@
 
 <body>
     <h1><%= book.title %></h1>
-    <p>
-        author: <%= book.full_name %><br>
-        number of pages: <%= book.num_pages %><br>
-        rating: <%= book.rating %><br>
-        publisher: <%= book.publisher %><br>
-        year published: <%= book.year_published %><br>
-    </p>
-    <br>
-    <br>
+
+
+    <div id="mainp">
+        <p style="text-align: left;">
+            <strong>Author: </strong> <%= book.full_name %><br>
+            <strong>Author's Year of Birth: </strong> <%= book.birth_year %><br>
+            <strong>Author's Hometown: </strong> <%= book.hometown %><br>
+            <strong>Page Count: </strong> <%= book.num_pages %><br>
+            <strong>Binding Type: </strong> <%= book.binding %><br>
+            <strong>Rating: </strong> <%= book.rating %><br>
+            <strong>Publisher: </strong> <%= book.publisher %><br>
+            <strong>Year Published: </strong> <%= book.year_published %><br>
+        </p>
+    </div>
 
 </body>
 </html>

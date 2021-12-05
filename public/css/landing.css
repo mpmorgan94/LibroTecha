@@ -114,3 +114,18 @@ p {
   border-radius: 2%;
   outline: none;
 }
+
+#mainp {
+  margin: auto;
+  background-color: rgb(161,236,255,1);
+  min-width: 70%;
+  margin-top: 1em;
+  margin-bottom: 2in;
+  padding: 1.5em;
+  padding-left: 1.7em;
+  padding-right: 1.7em;
+  border-style: solid;
+  border-radius: .2%;
+  border-color: black;
+  width: fit-content;
+}
