@@ -32,6 +32,24 @@
           <input class="navbutton" type="submit" value="FAVORITES">
         </form>
       </li>
+
+      <div id="inline" style="position: absolute; right: 0%; padding-right: 1.5em;">
+        <li>
+          <form id="inline" action="/admin" method="POST">
+            <input id="hidden" name="email" value="<%= email %>" >
+            <input id="hidden" name="password" value="<%= password %>">
+            <input class="navbutton" type="submit" value="ADMIN">
+          </form>
+        </li>
+
+        <li>
+          <form id="inline" action="/signout" method="POST">
+            <input id="hidden" name="email" value="<%= email %>" >
+            <input id="hidden" name="password" value="<%= password %>">
+            <input class="navbutton" type="submit" value="SIGN OUT">
+          </form>
+        </li>
+      </div>
     </ul>
 
   </nav>

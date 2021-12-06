@@ -15,13 +15,13 @@
     </script>
     <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Work+Sans:400,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/navBar.css">
-    <link rel="stylesheet" type="text/css" href="/css/allBooks.css">
+    <link rel="stylesheet" type="text/css" href="/css/admin.css">
     <%- include('../partials/navBar'); %>
     <title>LibroTecha</title>
 </head>
 
 <body>
-    <h1>All Books</h1>
+    <h1>Admin Options</h1>
 
     <div id="mainp">
         <p>
@@ -41,6 +41,16 @@
                         <% } %>
                     </form>
                     <div id="child"><%= book.favorite_count %></div>
+                </div>
+
+                <div id="container">
+                    <form style="display: inline;" action="/bookEdit" method="POST">
+                        <input id="hidden" name="email" value="<%= email %>">
+                        <input id="hidden" name="password" value="<%= password %>">
+                        <input id="hidden" name="book_id" value="<%= book.book_id %>">
+                        &nbsp;
+                        <input id="heart" src="/assets/pencil.png" type="image" alt="submit">
+                    </form>
                 </div>
 
                 <form style="display: inline;" action="/book" method="POST">

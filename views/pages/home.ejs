@@ -2,6 +2,16 @@
 
 <html>
 <head>
+    <script type="text/javascript">
+        function preventBack() {
+            window.history.forward();
+            history.replaceState(null, '', '/');
+        }
+         
+        setTimeout("preventBack()", 0);
+         
+        window.onunload = function () { null };
+    </script>
     <link rel="stylesheet" type="text/css" href="/css/navBar.css">
     <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Work+Sans:400,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/signUp.css">

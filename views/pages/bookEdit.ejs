@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <script type="text/javascript">
+        function preventBack() {
+            window.history.forward();
+            history.replaceState(null, '', '/');
+        }
+         
+        setTimeout("preventBack()", 0);
+         
+        window.onunload = function () { null };
+    </script>
+    <link rel="stylesheet" type="text/css" href="/css/navBar.css">
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Work+Sans:400,700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/bookEdit.css">
+    <%- include('../partials/navBar'); %> 
+    <title>LibroTecha</title>
+</head>
+
+
+<body>
+    <h1>Update a Book</h1>
+    <p>Use the form to update the books attributes.
+    </p>
+
+    <form id="form" action="/bookEditSubmit" method="POST">
+        <input id="hidden" name="email" value="<%= email %>">
+        <input id="hidden" name="password" value="<%= password %>">
+        <input id="hidden" name="book_id" value=<%= book.book_id %> >
+
+        <div id=col>
+            <input id="textfield" name="title" type="text" value="<%= book.title %>">
+            <br>
+            <input id="textfield" name="rating" type="number" step="any" value="<%= book.rating %>">
+        </div>
+        <div id="col">
+            <input id="textfield" name="publisher" type="text" value="<%= book.publisher %>">
+            <br>
+            <input id="textfield" name="year_published" type="number" placeholder="<%= book.year_published %>">
+        </div>
+
+        <input id="inputSubmit" type="submit" value="UPDATE">
+    </form>
+
+</body>
+</html>

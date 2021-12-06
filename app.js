@@ -30,7 +30,7 @@ app.get('/login', (req, result) => {
 app.post('/home', async (req, result) => {
     
     pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
-                AND password='${req.body.password}'`, (err, res) => {
+                AND password='${req.body.password}' AND is_signed_in=True`, (err, res) => {
         if (err) {
             console.log(err)
             result.render('pages/errors', { errmsg: err })
@@ -58,6 +58,32 @@ app.post('/verifyCreds', (req, result) => {
     pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
                 AND password='${req.body.password}'`, (err, res) => {
         if (err) {
+            result.render('pages/errors', { errmsg: err.message });
+        }
+        else if (res.rowCount == 0) {
+            result.render('pages/errors', { errmsg: "no account associated with provided username and password." });
+        }
+        else {
+            //change users signed in variable to true
+            pool.query(`UPDATE Public.user
+                        SET is_signed_in = True
+                        WHERE email='${req.body.email}'`, (err, res2) => {
+                if (err) {
+                    result.render('pages/errors', { errmsg: err.message });
+                }
+                else {
+                    //success, login
+                    result.render('pages/home', { email: res.rows[0].email, password: res.rows[0].password });
+                }
+            });
+        }
+    });
+});
+
+app.post('/signout', (req, result) => {
+    pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
+                AND password='${req.body.password}' AND is_signed_in=true`, (err, res) => {
+        if (err) {
             console.log(err);
             result.render('pages/errors', { errmsg: err.message });
         }
@@ -65,8 +91,20 @@ app.post('/verifyCreds', (req, result) => {
             result.render('pages/errors', { errmsg: "no account associated with provided username and password." });
         }
         else {
-            //success, login
-            result.render('pages/home', { email: res.rows[0].email, password: res.rows[0].password });
+            //change users signed in variable to false
+            pool.query(`UPDATE Public.user
+                        SET is_signed_in = False
+                        WHERE email='${req.body.email}'`, (err, res2) => {
+                if (err) {
+                    console.log(err);
+                    result.render('pages/errors', { errmsg: err.message });
+                }
+                else {
+                    //success, signout user
+                    result.setHeader('Clear-Site-Data', '"*"');
+                    result.render('pages/landing');
+                }
+            });
         }
     });
 });
@@ -82,10 +120,11 @@ app.post('/createUser', (req, result) => {
         }
         else {
             pool.query(`INSERT INTO public.User (email, password,
-                first_name, last_name) VALUES (
+                first_name, last_name, is_signed_in) VALUES (
                 '${req.body.email}', '${req.body.password}',
                 '${req.body.first_name}',
-                '${req.body.last_name}')`, (err, res) => {
+                '${req.body.last_name}',
+                True)`, (err, res) => {
 
                 if (err) {
                     console.log(err);
@@ -103,7 +142,7 @@ app.post('/createUser', (req, result) => {
 
 app.post('/allBooks', (req, result) => {
     pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
-                AND password='${req.body.password}'`, (err, res) => {
+                AND password='${req.body.password}' AND is_signed_in=True`, (err, res) => {
         if (err) {
             console.log(err)
             result.render('pages/errors', { errmsg: err })
@@ -120,7 +159,7 @@ app.post('/allBooks', (req, result) => {
                                     AS is_favorite,
                                     (SELECT COUNT(book_id) FROM favorite
                                     WHERE book.book_id=favorite.book_id)
-                                    AS favorite_count FROM book`, (err, res) => {
+                                    AS favorite_count FROM book ORDER BY title`, (err, res) => {
 
                 result.render('pages/allBooks', { books: res.rows, email: req.body.email, password: req.body.password });
             })
@@ -130,7 +169,7 @@ app.post('/allBooks', (req, result) => {
 
 app.post('/book', (req, result) => {
     pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
-                AND password='${req.body.password}'`, (err, res) => {
+                AND password='${req.body.password}' AND is_signed_in=True`, (err, res) => {
         if (err) {
             console.log(err)
             result.render('pages/errors', { errmsg: err })
@@ -154,7 +193,7 @@ app.post('/book', (req, result) => {
 
 app.post('/search', (req, result) => {
     pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
-                AND password='${req.body.password}'`, (err, res) => {
+                AND password='${req.body.password}' AND is_signed_in=True`, (err, res) => {
         if (err) {
             console.log(err)
             result.render('pages/errors', { errmsg: err })
@@ -172,7 +211,7 @@ app.post('/search', (req, result) => {
 
 app.post('/searchResults', (req, result) => {
     pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
-                AND password='${req.body.password}'`, (err, res) => {
+                AND password='${req.body.password}' AND is_signed_in=True`, (err, res) => {
         if (err) {
             console.log(err)
             result.render('pages/errors', { errmsg: err })
@@ -221,13 +260,12 @@ app.post('/searchResults', (req, result) => {
 
 app.post('/addFavorite', (req, result) => {
     pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
-                AND password='${req.body.password}'`, (err, res) => {
+                AND password='${req.body.password}' AND is_signed_in=True`, (err, res) => {
         if (err) {
             console.log(err)
             result.render('pages/errors', { errmsg: err })
         }
         else if (res.rowCount == 0) {
-            console.log("no account associated with provided username and password.")
             result.render('pages/errors', { errmsg: "credential verification failed" })
         }
         else {
@@ -237,7 +275,6 @@ app.post('/addFavorite', (req, result) => {
                         AND book_id=${req.body.book_id}`, (err, res) => {
                 
                 if (err) {
-                    console.log(err);
                     result.render('pages/errors', { errmsg: err })
                 }
                 else if (res.rows[0].count > 0) {
@@ -247,7 +284,6 @@ app.post('/addFavorite', (req, result) => {
                                 AND book_id=${req.body.book_id}`, (err, res) => {
                         
                         if (err) {
-                            console.log(err);
                             result.render('pages/errors', { errmsg: err })
                         }
                         else {
@@ -312,7 +348,7 @@ app.post('/addFavorite', (req, result) => {
 
 app.post('/favorites', (req, result) => {
     pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
-                AND password='${req.body.password}'`, (err, res) => {
+                AND password='${req.body.password}' AND is_signed_in=True`, (err, res) => {
         if (err) {
             console.log(err)
             result.render('pages/errors', { errmsg: err })
@@ -346,6 +382,99 @@ app.post('/favorites', (req, result) => {
         }
     });
 });
+
+app.post('/admin', (req, result) => {
+    pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
+                AND password='${req.body.password}' AND is_signed_in=True
+                AND role='admin'`, (err, res) => {
+        if (err) {
+            console.log(err)
+            result.render('pages/errors', { errmsg: err })
+        }
+        else if (res.rowCount == 0) {
+            console.log("no account associated with provided username and password.")
+            result.render('pages/errors', { errmsg: "credential verification failed. Note: only admins can use the admin functionality." })
+        }
+        else {
+            //success, allow access
+            pool.query(`SELECT *, ('${req.body.email}'
+                        IN (SELECT usr_email FROM favorite
+                        WHERE book.book_id = favorite.book_id))
+                        AS is_favorite,
+                        (SELECT COUNT(book_id) FROM favorite
+                        WHERE book.book_id=favorite.book_id)
+                        AS favorite_count FROM book ORDER BY title`, (err, res) => {
+
+            result.render('pages/admin', { books: res.rows, email: req.body.email, password: req.body.password });
+            })
+        }
+    });
+});
+
+app.post('/bookEdit', (req, result) => {
+    pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
+                AND password='${req.body.password}' AND is_signed_in=True`, (err, res) => {
+        if (err) {
+            console.log(err)
+            result.render('pages/errors', { errmsg: err })
+        }
+        else if (res.rowCount == 0) {
+            console.log("no account associated with provided username and password.")
+            result.render('pages/errors', { errmsg: "credential verification failed" })
+        }
+        else {
+            //success, allow access
+            pool.query(`SELECT * FROM book
+                        WHERE book_id=${req.body.book_id}`, (err, res) => {
+                
+                if (err) {console.log(err);}
+                result.render('pages/bookEdit', { book: res.rows[0], email: req.body.email, password: req.body.password });
+            })
+        }
+    });
+});
+
+app.post('/bookEditSubmit', (req, result) => {
+    pool.query(`SELECT * FROM public.User WHERE email='${req.body.email}'
+                AND password='${req.body.password}' AND is_signed_in=True`, (err, res) => {
+        if (err) {
+            console.log(err)
+            result.render('pages/errors', { errmsg: err })
+        }
+        else if (res.rowCount == 0) {
+            console.log("no account associated with provided username and password.")
+            result.render('pages/errors', { errmsg: "credential verification failed" })
+        }
+        else {
+            //success, allow access
+            pool.query(`UPDATE book
+                        SET title='${req.body.title}',
+                            publisher='${req.body.publisher}',
+                            rating=${req.body.rating},
+                            year_published=${req.body.year_published}
+                            WHERE book_id=${req.body.book_id}`, (err, res) => {
+                
+                if (err) {
+                    console.log(err);
+                    result.render('pages/errors', { errmsg: err })
+                }
+                else {
+                    pool.query(`SELECT *, ('${req.body.email}'
+                        IN (SELECT usr_email FROM favorite
+                        WHERE book.book_id = favorite.book_id))
+                        AS is_favorite,
+                        (SELECT COUNT(book_id) FROM favorite
+                        WHERE book.book_id=favorite.book_id)
+                        AS favorite_count FROM book ORDER BY title`, (err, res) => {
+
+                    result.render('pages/admin', { books: res.rows, email: req.body.email, password: req.body.password });
+                    });
+                }
+            })
+        }
+    });
+});
+
 
 app.listen(process.env.PORT || 3000, () => {
     console.log('Server is running.. on Port 3000');
